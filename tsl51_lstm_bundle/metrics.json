@@ -1,0 +1,32 @@
+{
+  "best_epoch": 11,
+  "confidence_threshold": 0.0,
+  "validation_argmax": {
+    "accuracy": 0.9950248756218906,
+    "macro_f1": 0.9951159951159951,
+    "evaluated_classes": 52,
+    "clips": 201
+  },
+  "validation_threshold": {
+    "accuracy": 0.9950248756218906,
+    "macro_f1": 0.9951159951159951,
+    "evaluated_classes": 52,
+    "clips": 201
+  },
+  "test": {
+    "tsl51_user": {
+      "argmax": {
+        "accuracy": 0.5374771480804388,
+        "macro_f1": 0.49485788252997137,
+        "evaluated_classes": 52,
+        "clips": 547
+      },
+      "threshold": {
+        "accuracy": 0.5374771480804388,
+        "macro_f1": 0.49485788252997137,
+        "evaluated_classes": 52,
+        "clips": 547
+      }
+    }
+  }
+}

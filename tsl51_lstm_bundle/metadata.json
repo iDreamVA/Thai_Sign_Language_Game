@@ -1,0 +1,452 @@
+{
+  "dataset": "Namonpas/thai-sign-language-tsl51",
+  "revision": "6d3dde16db90e5cc10c6fd5e8a36e3be18a68df5",
+  "dataset_card": "https://huggingface.co/datasets/Namonpas/thai-sign-language-tsl51/blob/6d3dde16db90e5cc10c6fd5e8a36e3be18a68df5/README.md",
+  "dataset_license": "CC BY-NC-SA 4.0. See dataset card for third-party terms.",
+  "expert_web_scraped_used": false,
+  "extra_manifest_used": false,
+  "seed": 42,
+  "training": {
+    "epochs": 50,
+    "batch_size": 128,
+    "learning_rate": 0.001,
+    "patience": 9,
+    "validation_fraction": 0.2
+  },
+  "versions": {
+    "torch": "2.14.1+cpu",
+    "numpy": "2.4.6"
+  },
+  "sequence_frames": 48,
+  "input_features": 216,
+  "coordinate_columns": [
+    "lh_x0",
+    "lh_y0",
+    "lh_z0",
+    "lh_x1",
+    "lh_y1",
+    "lh_z1",
+    "lh_x2",
+    "lh_y2",
+    "lh_z2",
+    "lh_x3",
+    "lh_y3",
+    "lh_z3",
+    "lh_x4",
+    "lh_y4",
+    "lh_z4",
+    "lh_x5",
+    "lh_y5",
+    "lh_z5",
+    "lh_x6",
+    "lh_y6",
+    "lh_z6",
+    "lh_x7",
+    "lh_y7",
+    "lh_z7",
+    "lh_x8",
+    "lh_y8",
+    "lh_z8",
+    "lh_x9",
+    "lh_y9",
+    "lh_z9",
+    "lh_x10",
+    "lh_y10",
+    "lh_z10",
+    "lh_x11",
+    "lh_y11",
+    "lh_z11",
+    "lh_x12",
+    "lh_y12",
+    "lh_z12",
+    "lh_x13",
+    "lh_y13",
+    "lh_z13",
+    "lh_x14",
+    "lh_y14",
+    "lh_z14",
+    "lh_x15",
+    "lh_y15",
+    "lh_z15",
+    "lh_x16",
+    "lh_y16",
+    "lh_z16",
+    "lh_x17",
+    "lh_y17",
+    "lh_z17",
+    "lh_x18",
+    "lh_y18",
+    "lh_z18",
+    "lh_x19",
+    "lh_y19",
+    "lh_z19",
+    "lh_x20",
+    "lh_y20",
+    "lh_z20",
+    "rh_x0",
+    "rh_y0",
+    "rh_z0",
+    "rh_x1",
+    "rh_y1",
+    "rh_z1",
+    "rh_x2",
+    "rh_y2",
+    "rh_z2",
+    "rh_x3",
+    "rh_y3",
+    "rh_z3",
+    "rh_x4",
+    "rh_y4",
+    "rh_z4",
+    "rh_x5",
+    "rh_y5",
+    "rh_z5",
+    "rh_x6",
+    "rh_y6",
+    "rh_z6",
+    "rh_x7",
+    "rh_y7",
+    "rh_z7",
+    "rh_x8",
+    "rh_y8",
+    "rh_z8",
+    "rh_x9",
+    "rh_y9",
+    "rh_z9",
+    "rh_x10",
+    "rh_y10",
+    "rh_z10",
+    "rh_x11",
+    "rh_y11",
+    "rh_z11",
+    "rh_x12",
+    "rh_y12",
+    "rh_z12",
+    "rh_x13",
+    "rh_y13",
+    "rh_z13",
+    "rh_x14",
+    "rh_y14",
+    "rh_z14",
+    "rh_x15",
+    "rh_y15",
+    "rh_z15",
+    "rh_x16",
+    "rh_y16",
+    "rh_z16",
+    "rh_x17",
+    "rh_y17",
+    "rh_z17",
+    "rh_x18",
+    "rh_y18",
+    "rh_z18",
+    "rh_x19",
+    "rh_y19",
+    "rh_z19",
+    "rh_x20",
+    "rh_y20",
+    "rh_z20",
+    "l_shoulder_x",
+    "l_shoulder_y",
+    "l_shoulder_z",
+    "r_shoulder_x",
+    "r_shoulder_y",
+    "r_shoulder_z",
+    "l_elbow_x",
+    "l_elbow_y",
+    "l_elbow_z",
+    "r_elbow_x",
+    "r_elbow_y",
+    "r_elbow_z",
+    "l_wrist_x",
+    "l_wrist_y",
+    "l_wrist_z",
+    "r_wrist_x",
+    "r_wrist_y",
+    "r_wrist_z",
+    "lbrow_outer_x",
+    "lbrow_outer_y",
+    "lbrow_outer_z",
+    "lbrow_inner_x",
+    "lbrow_inner_y",
+    "lbrow_inner_z",
+    "rbrow_inner_x",
+    "rbrow_inner_y",
+    "rbrow_inner_z",
+    "rbrow_outer_x",
+    "rbrow_outer_y",
+    "rbrow_outer_z",
+    "mouth_right_x",
+    "mouth_right_y",
+    "mouth_right_z",
+    "mouth_left_x",
+    "mouth_left_y",
+    "mouth_left_z"
+  ],
+  "feature_layout": "162 normalized xyz values followed by 54 valid-landmark masks",
+  "output_type": "class logits",
+  "classes": [
+    {
+      "index": 0,
+      "sign_id": "null_act",
+      "thai": "ไม่พบรูปท่า"
+    },
+    {
+      "index": 1,
+      "sign_id": "กรุงเทพ_var_1",
+      "thai": "กรุงเทพ"
+    },
+    {
+      "index": 2,
+      "sign_id": "กลัว_var_1",
+      "thai": "กลัว"
+    },
+    {
+      "index": 3,
+      "sign_id": "กิน_var_1",
+      "thai": "กิน"
+    },
+    {
+      "index": 4,
+      "sign_id": "ขนมปัง_var_1",
+      "thai": "ขนมปัง"
+    },
+    {
+      "index": 5,
+      "sign_id": "ขอบคุณ_เปิดมือสองข้าง",
+      "thai": "ขอบคุณ"
+    },
+    {
+      "index": 6,
+      "sign_id": "ขอโทษ_อายุเท่ากันหรือน้อยกว่า",
+      "thai": "ขอโทษ"
+    },
+    {
+      "index": 7,
+      "sign_id": "ข้าว_var_1",
+      "thai": "ข้าว"
+    },
+    {
+      "index": 8,
+      "sign_id": "คุณ_var_1",
+      "thai": "คุณ"
+    },
+    {
+      "index": 9,
+      "sign_id": "ง่วง_var_1",
+      "thai": "ง่วง"
+    },
+    {
+      "index": 10,
+      "sign_id": "ฉัน_var_1",
+      "thai": "ฉัน"
+    },
+    {
+      "index": 11,
+      "sign_id": "ฉัน_var_2",
+      "thai": "ฉัน"
+    },
+    {
+      "index": 12,
+      "sign_id": "ชอบ_var_1",
+      "thai": "ชอบ"
+    },
+    {
+      "index": 13,
+      "sign_id": "ชื่อ_var_1",
+      "thai": "ชื่อ"
+    },
+    {
+      "index": 14,
+      "sign_id": "ดี_var_1",
+      "thai": "ดี"
+    },
+    {
+      "index": 15,
+      "sign_id": "ด้วยกัน_var_1",
+      "thai": "ด้วยกัน"
+    },
+    {
+      "index": 16,
+      "sign_id": "ตลาด_var_4",
+      "thai": "ตลาด"
+    },
+    {
+      "index": 17,
+      "sign_id": "ถาม_ทำท่ามือถามไปยังผู้นั้น",
+      "thai": "ถาม"
+    },
+    {
+      "index": 18,
+      "sign_id": "ทำงาน_var_2",
+      "thai": "ทำงาน"
+    },
+    {
+      "index": 19,
+      "sign_id": "ทำไม_var_1",
+      "thai": "ทำไม"
+    },
+    {
+      "index": 20,
+      "sign_id": "ที่ไหน_var_1",
+      "thai": "ที่ไหน"
+    },
+    {
+      "index": 21,
+      "sign_id": "น้อง_var_1",
+      "thai": "น้อง"
+    },
+    {
+      "index": 22,
+      "sign_id": "บ้าน_var_1",
+      "thai": "บ้าน"
+    },
+    {
+      "index": 23,
+      "sign_id": "พรุ่งนี้_var_1",
+      "thai": "พรุ่งนี้"
+    },
+    {
+      "index": 24,
+      "sign_id": "พี่_var_1",
+      "thai": "พี่"
+    },
+    {
+      "index": 25,
+      "sign_id": "ภาษามือ_var_1",
+      "thai": "ภาษามือ"
+    },
+    {
+      "index": 26,
+      "sign_id": "ยาย_var_1",
+      "thai": "ยาย"
+    },
+    {
+      "index": 27,
+      "sign_id": "ร้อน_สองมือ",
+      "thai": "ร้อน"
+    },
+    {
+      "index": 28,
+      "sign_id": "วันนี้_var_1",
+      "thai": "วันนี้"
+    },
+    {
+      "index": 29,
+      "sign_id": "วันหยุด_var_1",
+      "thai": "วันหยุด"
+    },
+    {
+      "index": 30,
+      "sign_id": "สบายดี_var_1",
+      "thai": "สบายดี"
+    },
+    {
+      "index": 31,
+      "sign_id": "สวัสดี_อายุเท่ากันหรือน้อยกว่า",
+      "thai": "สวัสดี"
+    },
+    {
+      "index": 32,
+      "sign_id": "หูหนวก_var_2",
+      "thai": "หูหนวก"
+    },
+    {
+      "index": 33,
+      "sign_id": "อยู่บ้าน_var_1",
+      "thai": "อยู่บ้าน"
+    },
+    {
+      "index": 34,
+      "sign_id": "อย่า_var_1",
+      "thai": "อย่า"
+    },
+    {
+      "index": 35,
+      "sign_id": "อะไร_var_1",
+      "thai": "อะไร"
+    },
+    {
+      "index": 36,
+      "sign_id": "เกิด_var_2",
+      "thai": "เกิด"
+    },
+    {
+      "index": 37,
+      "sign_id": "เช้า_var_1",
+      "thai": "เช้า"
+    },
+    {
+      "index": 38,
+      "sign_id": "เที่ยว_var_1",
+      "thai": "เที่ยว"
+    },
+    {
+      "index": 39,
+      "sign_id": "เรียก_var_1",
+      "thai": "เรียก"
+    },
+    {
+      "index": 40,
+      "sign_id": "เรียน_var_1",
+      "thai": "เรียน"
+    },
+    {
+      "index": 41,
+      "sign_id": "เหงา_var_1",
+      "thai": "เหงา"
+    },
+    {
+      "index": 42,
+      "sign_id": "เหนื่อย_var_1",
+      "thai": "เหนื่อย"
+    },
+    {
+      "index": 43,
+      "sign_id": "แต่งงาน_var_1",
+      "thai": "แต่งงาน"
+    },
+    {
+      "index": 44,
+      "sign_id": "แฟน_var_1",
+      "thai": "แฟน"
+    },
+    {
+      "index": 45,
+      "sign_id": "แมว_var_1",
+      "thai": "แมว"
+    },
+    {
+      "index": 46,
+      "sign_id": "แม่_var_1",
+      "thai": "แม่"
+    },
+    {
+      "index": 47,
+      "sign_id": "โกรธ_var_1",
+      "thai": "โกรธ"
+    },
+    {
+      "index": 48,
+      "sign_id": "โรงเรียน_var_1",
+      "thai": "โรงเรียน"
+    },
+    {
+      "index": 49,
+      "sign_id": "โสด_var_1",
+      "thai": "โสด"
+    },
+    {
+      "index": 50,
+      "sign_id": "ไข่_var_2",
+      "thai": "ไข่"
+    },
+    {
+      "index": 51,
+      "sign_id": "ไป_var_2",
+      "thai": "ไป"
+    }
+  ],
+  "null_index": 0,
+  "confidence_threshold": 0.0
+}
