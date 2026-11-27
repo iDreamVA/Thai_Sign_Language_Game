@@ -115,9 +115,9 @@ py -3.11 -m venv .\webcam_demo\.venv
 
 รายละเอียดโหมดกล้องและการอ่านผลอยู่ใน [คู่มือ webcam_demo](webcam_demo/README.md)
 
-## 5. เทรนโมเดลใหม่ใน Google Colab
+## 5. เทรนโมเดลใหม่ใน Google Colab (เดียเทรนไว้แล้ว)
 
-1. เลือก [`train_tsl51_lstm_colab.ipynb`](train_tsl51_lstm_colab.ipynb) สำหรับเทรน LSTM หรือ [`train_tsl51_plain_lstm_colab.ipynb`](train_tsl51_plain_lstm_colab.ipynb) สำหรับเปรียบเทียบฟีเจอร์สามแบบใน LSTM ทิศทางเดียว
+1. เลือก [`train_tsl51_lstm_colab.ipynb`](train_tsl51_lstm_colab.ipynb) สำหรับเทรน Bi-LSTM หรือ [`train_tsl51_plain_lstm_colab.ipynb`](train_tsl51_plain_lstm_colab.ipynb) สำหรับเปรียบเทียบฟีเจอร์สามแบบใน LSTM
 2. อัปโหลดไฟล์ที่เลือกใน [Google Colab](https://colab.research.google.com/) เลือก **Runtime → Change runtime type → GPU** แล้วกด **Run all**
 3. ค่า `DOWNLOAD_TSL51 = "training"` จะดาวน์โหลดเฉพาะข้อมูลที่ใช้เทรนและวัดผลให้อัตโนมัติ ถ้ามีข้อมูลอยู่แล้ว ให้ตั้งเป็น `"local"` และชี้ `TSL51_DIR` ไปยังโฟลเดอร์ที่มี `metadata/` และ `landmarks/` [ไฟล์และเงื่อนไขชุดข้อมูล TSL‑51](https://huggingface.co/datasets/Namonpas/thai-sign-language-tsl51/blob/main/README.md)
 4. เมื่อรันเสร็จ ดูพาธ ZIP จากผลของเซลล์ export แล้วดาวน์โหลดจากแถบ **Files** ของ Colab หรือเปลี่ยน `DOWNLOAD_BUNDLE = True` แล้วรันเซลล์ดาวน์โหลด หากต้องการบันทึกลง Google Drive ให้ตั้ง `SAVE_TO_DRIVE = True` ในเซลล์ตั้งค่าก่อนรันและอนุญาตให้ Colab เข้าถึง Drive
