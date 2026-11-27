@@ -1,0 +1,2 @@
+﻿trial,timestamp,target_sign_id,target_thai,predicted_sign_id,predicted_thai,raw_sign_id,top_confidence,target_probability,matched,rejected_low_confidence,camera,window_seconds,threshold,captured_frames
+1,2026-11-22T17:11:33.860267+07:00,ขอบคุณ_เปิดมือสองข้าง,ขอบคุณ,ขอบคุณ_เปิดมือสองข้าง,ขอบคุณ,ขอบคุณ_เปิดมือสองข้าง,0.528624415397644,0.528624415397644,1,0,0,2.0,0.0,21

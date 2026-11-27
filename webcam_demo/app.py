@@ -3,16 +3,14 @@
 import argparse
 import json
 import time
-import tkinter as tk
 from collections import deque
 from pathlib import Path
-from tkinter import messagebox, ttk
 
 import cv2
 import mediapipe as mp
 import numpy as np
 import torch
-from PIL import Image, ImageTk
+from PIL import Image
 
 from tsl_inference import SignPredictor
 from tsl_preprocess import COORDINATE_COLUMNS, INPUT_FEATURES
@@ -23,6 +21,33 @@ APP_DIR = Path(__file__).resolve().parent
 POSE_INDICES = (11, 12, 13, 14, 15, 16)
 # TSL-51 dataset card lists the face subset in this order.
 FACE_INDICES = (105, 70, 300, 334, 61, 291)
+
+CATEGORIES = {
+    'greetings': ('ทักทายและมารยาทพื้นฐาน', 'สวัสดี ขอบคุณ ขอโทษ สบายดี ไม่เป็นไร โชคดี'),
+    'family': ('แนะนำตัวเองและครอบครัว', 'ชื่อ อายุ ฉัน คุณ แม่ พี่ น้อง แฟน ยาย'),
+    'questions': ('คำถามพื้นฐาน', 'ทำไม อะไร ที่ไหน'),
+    'daily': ('กิจกรรมในชีวิตประจำวัน', 'กิน ข้าว ไป ทำงาน เรียน อยู่บ้าน เที่ยว ถาม เรียก วันนี้ พรุ่งนี้'),
+    'feelings': ('แสดงความรู้สึกต่อตัวเอง',
+                 'รัก ชอบ ไม่ชอบ คิดถึง โกรธ เหงา กลัว เหนื่อย ง่วง เสียใจ เศร้า หิว อิ่ม ไม่สบาย เข้าใจ'),
+    'other': ('อื่น ๆ', ''),
+}
+
+
+def group_classes(metadata):
+    category_by_word = {
+        word: category for category, (_, words) in CATEGORIES.items() for word in words.split()
+    }
+    groups = {category: [] for category in CATEGORIES}
+    for item in metadata['classes']:
+        if item['index'] != metadata['null_index']:
+            groups[category_by_word.get(item['thai'], 'other')].append(item)
+    return groups
+
+
+def print_category(category, classes):
+    title, _ = CATEGORIES[category]
+    words = dict.fromkeys(item['thai'] for item in classes)
+    print(f"{category} | {title} | {len(words)} คำ | {', '.join(words) or '—'}", flush=True)
 
 
 def extract_coordinates(result):
@@ -58,11 +83,13 @@ def load_predictor(model_dir):
 
 
 class WebcamApp:
-    def __init__(self, root, predictor, camera_index, window_seconds, word_test=None):
+    def __init__(self, root, predictor, camera_index, window_seconds, word_test=None, category_sign_ids=None):
         self.root = root
         self.predictor = predictor
         self.window_seconds = window_seconds
         self.word_test = word_test
+        self.category_sign_ids = category_sign_ids
+        self.last_reported_word = None
         self.samples = deque()
         self.last_hand_time = None
         self.last_prediction_time = 0.0
@@ -143,6 +170,7 @@ class WebcamApp:
         self.status.set('ยกมือแล้วเริ่มทำท่าใหม่')
 
     def clear_prediction(self):
+        self.last_reported_word = None
         self.word.set('รอเริ่มทำท่า')
         self.confidence.set('ความมั่นใจ — %')
         self.confidence_bar['value'] = 0
@@ -256,6 +284,16 @@ class WebcamApp:
 
     def display_prediction(self, prediction):
         confidence = prediction['raw_confidence'] * 100
+        if self.category_sign_ids is not None:
+            # Keep the original winner so an out-of-category sign cannot become an in-category guess.
+            if prediction['raw_sign_id'] not in self.category_sign_ids:
+                self.clear_prediction()
+                self.word.set('ไม่พบคำในหมวดนี้')
+                return
+            word = None if prediction['rejected_low_confidence'] else prediction['thai']
+            if word is not None and word != self.last_reported_word:
+                print(f'ทำนาย {word} | มั่นใจ {confidence:.1f}%', flush=True)
+            self.last_reported_word = word
         if prediction['rejected_low_confidence']:
             self.word.set('ยังไม่มั่นใจ')
             self.sign_id.set(f"คำที่ใกล้ที่สุด {prediction['raw_sign_id']}")
@@ -280,10 +318,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--model-dir', type=Path, default=APP_DIR / 'model')
     parser.add_argument('--camera', type=int, default=0)
+    parser.add_argument('--ui', choices=('auto', 'tk', 'opencv'), default='auto',
+                        help='Window backend; auto uses OpenCV if Tk cannot load')
     parser.add_argument('--window-seconds', type=float, default=2.0)
     parser.add_argument('--self-check', action='store_true', help='Check model and landmark pipeline without opening the camera')
     parser.add_argument('--list-words', action='store_true', help='List class names and exact sign IDs')
-    parser.add_argument('--target', help='Thai target word or exact sign_id for one-word testing')
+    parser.add_argument('--list-categories', action='store_true',
+                        help='List categories and their supported Thai words')
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--category', choices=CATEGORIES, help='Recognize only words from this category')
+    mode.add_argument('--target', help='Thai target word or exact sign_id for one-word testing')
     parser.add_argument('--trials', type=int, default=10, help='Number of separately recorded target trials')
     parser.add_argument('--results-dir', type=Path, default=APP_DIR / 'sessions')
     args = parser.parse_args()
@@ -292,14 +336,27 @@ def main():
     if args.trials < 1:
         parser.error('--trials must be at least 1')
     metadata = json.loads((args.model_dir / 'metadata.json').read_text(encoding='utf-8'))
+    classes = metadata['classes']
+    if args.list_categories or args.category:
+        groups = group_classes(metadata)
+        if args.list_categories:
+            for category, items in groups.items():
+                print_category(category, items)
+            return
+        classes = groups[args.category]
     if args.list_words:
-        for item in metadata['classes']:
+        for item in classes:
             print(f"{item['thai']}\t{item['sign_id']}")
         return
+    category_sign_ids = None
+    if args.category:
+        if not classes:
+            parser.error(f'โมเดลนี้ไม่มีคำในหมวด {args.category} ใช้ --list-categories เพื่อดูหมวดที่มีคำ')
+        category_sign_ids = {item['sign_id'] for item in classes}
     target = None
     if args.target:
         try:
-            target = resolve_target(metadata['classes'], args.target)
+            target = resolve_target(classes, args.target)
         except ValueError as exc:
             parser.error(str(exc))
     torch.set_num_threads(max(1, min(torch.get_num_threads(), 4)))
@@ -311,15 +368,33 @@ def main():
         print(f"OK: MediaPipe, TorchScript, {len(predictor.metadata['classes'])} classes, "
               f"{predictor.metadata['sequence_frames']} frames, {INPUT_FEATURES} features")
         return
-    root = tk.Tk()
+    if args.category:
+        print_category(args.category, classes)
+    # CLI checks must also work when Windows blocks the optional Tk DLLs.
+    global tk, messagebox, ttk, ImageTk
+    root = None
+    if args.ui != 'opencv':
+        try:
+            import tkinter as tk
+            from tkinter import messagebox, ttk
+            from PIL import ImageTk
+            root = tk.Tk()
+        except Exception as exc:
+            if args.ui == 'tk':
+                parser.exit(1, f'Tk window unavailable: {exc}\nUse --ui opencv for the webcam window.\n')
+            print(f'Tk window unavailable: {exc}\nUsing the OpenCV webcam window.', flush=True)
     word_test = None
     if target is not None:
         word_test = WordTest(target, args.trials, args.window_seconds, args.results_dir,
                              args.camera, metadata['confidence_threshold'])
         print(f"ทดสอบคำ {target['thai']} ({target['sign_id']}) จำนวน {args.trials} รอบ กด Space เพื่อเริ่ม", flush=True)
     app = None
+    if root is None:
+        from opencv_ui import OpenCVWebcamApp
+        OpenCVWebcamApp(predictor, args.camera, args.window_seconds, word_test, category_sign_ids).run()
+        return
     try:
-        app = WebcamApp(root, predictor, args.camera, args.window_seconds, word_test)
+        app = WebcamApp(root, predictor, args.camera, args.window_seconds, word_test, category_sign_ids)
         root.mainloop()
     except Exception as exc:
         messagebox.showerror('เริ่มโปรแกรมไม่ได้', str(exc), parent=root)

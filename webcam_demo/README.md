@@ -17,6 +17,31 @@
 
 โฟลเดอร์ `model` มี TorchScript กับ metadata ที่คัดลอกจากโมเดล TSL-51 ของโปรเจกต์ รองรับ 52 คลาส รายชื่อคำดูใน `model/metadata.json` ถ้าเปลี่ยนโมเดลให้ใช้ไฟล์ทั้งคู่จากการส่งออกครั้งเดียวกัน พร้อมโค้ด preprocessing ที่ตรงกัน หรือระบุ `--model-dir` ไปยัง bundle อื่น
 
+## เฟส 2 สแกนตามหมวดคำศัพท์
+
+ถ้าเปิด PowerShell จากโฟลเดอร์โปรเจกต์หลัก ให้ `cd webcam_demo` ก่อน แล้วดูหมวดและคำที่โมเดลรองรับได้โดยไม่ต้องเปิดกล้อง
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 app.py --list-categories
+```
+
+เปิดกล้องเฉพาะหมวดที่ต้องการ เช่น หมวดทักทายและมารยาทพื้นฐาน
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 app.py --category greetings
+```
+
+| ค่าที่ใช้กับ `--category` | หมวด |
+|---|---|
+| `greetings` | ทักทายและมารยาทพื้นฐาน |
+| `family` | แนะนำตัวเองและครอบครัว |
+| `questions` | คำถามพื้นฐาน |
+| `daily` | กิจกรรมในชีวิตประจำวัน |
+| `feelings` | แสดงความรู้สึกต่อตัวเอง |
+| `other` | คำอื่น ๆ ที่มีในโมเดล |
+
+โปรแกรมพิมพ์รายชื่อคำของหมวดตอนเริ่ม และพิมพ์ผลพร้อมค่าความมั่นใจเมื่อทายได้คำใหม่ในหมวด ถ้าคำที่โมเดลทายอยู่นอกหมวด หน้าต่างกล้องจะแสดง `ไม่พบคำในหมวดนี้` คำที่มีหลายรูปท่า เช่น `ฉัน` ใช้ได้ทั้งสองรูป ดู `sign_id` ของแต่ละรูปด้วย `--list-words --category family`
+
 ## ตรวจโมเดลทีละคำ
 
 เปิด Terminal ใหม่ใน VS Code แล้วรันคำสั่งต่อไปนี้ หากเริ่มจากโฟลเดอร์โปรเจกต์หลัก ให้พิมพ์ `cd webcam_demo` ก่อน
@@ -78,3 +103,15 @@ uv pip install --python .venv\Scripts\python.exe -r requirements.txt
 ใช้โค้ด `tsl_preprocess.py` และ `tsl_inference.py` ของ bundle เดิม เรียงจุด 54 จุดตาม metadata เป็นมือซ้าย 21 จุด มือขวา 21 จุด pose 11–16 และใบหน้า 105, 70, 300, 334, 61, 291 ตามลำดับในคำอธิบายชุดข้อมูล ถ้าจับจุดไม่ได้ใช้ NaN แล้วแปลงเป็น 48 เฟรม × 216 features แบบเดียวกับตอนเทรน
 
 อ้างอิง [TSL-51 landmark extraction](https://huggingface.co/datasets/Namonpas/thai-sign-language-tsl51/blob/main/README.md#landmark-extraction-mediapipe) และ [MediaPipe Holistic](https://chuoling.github.io/mediapipe/solutions/holistic.html)
+
+## Windows: Tk DLL blocked by Application Control
+
+The app automatically uses an OpenCV window if Tk cannot load. Select it explicitly with:
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 app.py --ui opencv
+```
+
+The OpenCV window supports live predictions and `--target` / `--trials` CSV recording. Focus the window and press Space to reset or start a trial; press Esc or close the window to quit. `--ui tk` requires working Tk DLLs. No Windows security policy changes are needed for the OpenCV backend.
+
+`--list-words`, `--self-check`, and `check_pipeline.py` do not require Tk. A `.pt` model is a binary TorchScript file; use `--self-check` to validate it instead of opening it as text.

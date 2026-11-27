@@ -7,7 +7,7 @@ from pathlib import Path
 
 import numpy as np
 
-from app import APP_DIR, FACE_INDICES, POSE_INDICES, extract_coordinates, load_predictor
+from app import APP_DIR, FACE_INDICES, POSE_INDICES, extract_coordinates, group_classes, load_predictor
 from tsl_preprocess import landmarks_to_tensor
 from word_test import WordTest, resolve_target
 
@@ -36,6 +36,15 @@ def main():
     assert 0 <= prediction['raw_confidence'] <= 1
     assert len(prediction['probabilities']) == len(predictor.metadata['classes'])
     assert np.isclose(sum(prediction['probabilities']), 1.0)
+    groups = group_classes(predictor.metadata)
+    assert {name: len({item['thai'] for item in items}) for name, items in groups.items()} == {
+        'greetings': 4, 'family': 8, 'questions': 3, 'daily': 11, 'feelings': 6, 'other': 18,
+    }
+    assert {item['sign_id'] for item in groups['family'] if item['thai'] == 'ฉัน'} == {'ฉัน_var_1', 'ฉัน_var_2'}
+    assert 'กรุงเทพ' in {item['thai'] for item in groups['other']}
+    assert sorted(item['index'] for items in groups.values() for item in items) == [
+        item['index'] for item in predictor.metadata['classes'] if item['index'] != predictor.metadata['null_index']
+    ]
     target = resolve_target(predictor.metadata['classes'], 'ขอบคุณ')
     assert target['sign_id'] == 'ขอบคุณ_เปิดมือสองข้าง'
     try:
@@ -82,6 +91,7 @@ def main():
         invalid.capture(4.5, coordinates)
         assert invalid.capture(5.3, coordinates)[0] == 'invalid'
     print('PASS: exact landmark order, missing-hand masks, preprocessing, exported model prediction')
+    print('PASS: category coverage, both variants of ฉัน, and exclusion of the null class')
     print('PASS: target resolution, countdown, separate trials, correct/wrong outcomes, CSV and invalid captures')
 
 
