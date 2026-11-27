@@ -90,8 +90,8 @@ py -3.11 -m venv .\webcam_demo\.venv
 .\webcam_demo\.venv\Scripts\python.exe -X utf8 .\webcam_demo\app.py --category greetings
 
 # ทดสอบคำเป้าหมาย 10 รอบ แล้วเก็บผลเป็น CSV
-.\webcam_demo\.venv\Scripts\python.exe -X utf8 .\webcam_demo\app.py --target "ขอบคุณ" --trials 10
-.\webcam_demo\.venv\Scripts\python.exe -X utf8 .\webcam_demo\app.py --target "ฉัน_var_1" --trials 10 --results-dir .\webcam_demo\sessions
+.\webcam_demo\.venv\Scripts\python.exe -X utf8 .\webcam_demo\app.py --target "ขอบคุณ"
+.\webcam_demo\.venv\Scripts\python.exe -X utf8 .\webcam_demo\app.py --target "ฉัน_var_1" --results-dir .\webcam_demo\sessions
 
 # ใช้กล้องตัวที่สอง จับท่า 3 วินาที และเปิดหน้าต่าง OpenCV
 .\webcam_demo\.venv\Scripts\python.exe -X utf8 .\webcam_demo\app.py --camera 1 --window-seconds 3 --ui opencv
